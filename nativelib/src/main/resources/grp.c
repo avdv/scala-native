@@ -1,4 +1,3 @@
-#include <errno.h>
 #include <stdlib.h>
 #include <grp.h>
 #include "types.h"
@@ -18,10 +17,9 @@ void scalanative_group_copy(struct group *group,
 }
 
 int scalanative_getgrgid(scalanative_gid_t gid, struct scalanative_group *buf) {
-    errno = 0;
     struct group *group = getgrgid(gid);
     if (group == NULL) {
-        return errno == 0 ? 1 : -1;
+        return 1;
     } else {
         scalanative_group_copy(group, buf);
         return 0;
@@ -29,7 +27,6 @@ int scalanative_getgrgid(scalanative_gid_t gid, struct scalanative_group *buf) {
 }
 
 int scalanative_getgrnam(char *name, struct scalanative_group *buf) {
-    errno = 0;
     struct group *group = getgrnam(name);
     if (group == NULL) {
         return 1;
