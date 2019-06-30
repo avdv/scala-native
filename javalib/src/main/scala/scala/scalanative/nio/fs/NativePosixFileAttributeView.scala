@@ -16,6 +16,7 @@ import scala.scalanative.nio.fs.attribute._
 final class NativePosixFileAttributeView(path: Path, options: Array[LinkOption])
     extends PosixFileAttributeView
     with FileOwnerAttributeView {
+
   private def throwIOException() =
     throw UnixException(path.toString, errno.errno)
   override val name: String = "posix"
@@ -42,7 +43,8 @@ final class NativePosixFileAttributeView(path: Path, options: Array[LinkOption])
       val uid = owner match {
         case u: NativeUserPrincipal => u.uid
 
-        case _ => throw new IllegalArgumentException("unsupported UserPrincipal")
+        case _ =>
+          throw new IllegalArgumentException("unsupported UserPrincipal")
       }
       if (unistd.chown(toCString(path.toString), uid, -1.toUInt) != 0) {
         throwIOException()
@@ -67,7 +69,8 @@ final class NativePosixFileAttributeView(path: Path, options: Array[LinkOption])
       val gid = group match {
         case g: NativeGroupPrincipal => g.gid
 
-        case _ => throw new IllegalArgumentException("unsupported GroupPrincipal")
+        case _ =>
+          throw new IllegalArgumentException("unsupported GroupPrincipal")
       }
 
       if (unistd.chown(toCString(path.toString), -1.toUInt, gid) != 0) {
