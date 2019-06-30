@@ -9,8 +9,7 @@ object UserPrincipalLookupServiceSuite extends tests.Suite {
   val lookupService = FileSystems.getDefault.getUserPrincipalLookupService
 
   test("lookupPrincipalByName succeeds for `root` user") {
-    assert(
-      lookupService.lookupPrincipalByName("root").getName == "root")
+    assert(lookupService.lookupPrincipalByName("root").getName == "root")
   }
 
   test("lookupPrincipalByName throws exception for `gobbledygook` user") {
@@ -21,8 +20,7 @@ object UserPrincipalLookupServiceSuite extends tests.Suite {
   }
 
   test("lookupPrincipalByGroupName succeeds for `root` group") {
-    assert(
-      lookupService.lookupPrincipalByGroupName("root").getName == "root")
+    assert(lookupService.lookupPrincipalByGroupName("root").getName == "root")
   }
 
   test("lookupPrincipalByGroupName throws exception for `gobbledygook` group") {
