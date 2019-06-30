@@ -9,7 +9,7 @@ import scalanative.posix.{errno => e, grp, pwd, unistd, time, utime}, e._
 import scalanative.posix.sys.stat
 import scala.scalanative.nio.fs.UnixException
 
-final case class NativeUserPrincipal(uid: stat.uid_t)(name: Option[String]) extends UserPrincipal {
+final case class NativeUserPrincipal private (uid: stat.uid_t)(name: Option[String]) extends UserPrincipal {
   override def getName = {
     name orElse {
       NativeUserPrincipalLookupService.getUsername(uid)
@@ -19,7 +19,7 @@ final case class NativeUserPrincipal(uid: stat.uid_t)(name: Option[String]) exte
   }
 }
 
-final case class NativeGroupPrincipal(gid: stat.gid_t)(name: Option[String]) extends GroupPrincipal {
+final case class NativeGroupPrincipal private (gid: stat.gid_t)(name: Option[String]) extends GroupPrincipal {
   override def getName: String = {
     name orElse {
       NativeUserPrincipalLookupService.getGroupName(gid)
