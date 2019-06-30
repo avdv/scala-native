@@ -1,4 +1,3 @@
-#include <errno.h>
 #include <stdlib.h>
 #include <pwd.h>
 #include "types.h"
@@ -21,11 +20,10 @@ void scalanative_passwd_copy(struct passwd *passwd,
 }
 int scalanative_getpwuid(scalanative_uid_t uid,
                          struct scalanative_passwd *buf) {
-    errno = 0;
     struct passwd *passwd = getpwuid(uid);
 
     if (passwd == NULL) {
-        return errno == 0 ? 1 : -1;
+        return 1;
     } else {
         scalanative_passwd_copy(passwd, buf);
         return 0;
@@ -33,7 +31,6 @@ int scalanative_getpwuid(scalanative_uid_t uid,
 }
 
 int scalanative_getpwnam(char *name, struct scalanative_passwd *buf) {
-    errno = 0;
     struct passwd *passwd = getpwnam(name);
 
     if (passwd == NULL) {
