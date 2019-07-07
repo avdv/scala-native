@@ -9,27 +9,17 @@ import scalanative.posix.{errno => e, grp, pwd, unistd, time, utime}, e._
 import scalanative.posix.sys.stat
 import scala.scalanative.nio.fs.UnixException
 
-final case class NativeUserPrincipal private (uid: stat.uid_t)(
-    name: Option[String])
+final case class NativeUserPrincipal(uid: stat.uid_t)(name: Option[String])
     extends UserPrincipal {
   override def getName = {
-    name orElse {
-      NativeUserPrincipalLookupService.getUsername(uid)
-    } getOrElse {
-      uid.toString
-    }
+    name getOrElse NativeUserPrincipalLookupService.getUsername(uid)
   }
 }
 
-final case class NativeGroupPrincipal private (gid: stat.gid_t)(
-    name: Option[String])
+final case class NativeGroupPrincipal(gid: stat.gid_t)(name: Option[String])
     extends GroupPrincipal {
   override def getName: String = {
-    name orElse {
-      NativeUserPrincipalLookupService.getGroupName(gid)
-    } getOrElse {
-      gid.toString
-    }
+    name getOrElse NativeUserPrincipalLookupService.getGroupName(gid)
   }
 }
 
@@ -48,7 +38,7 @@ object NativeUserPrincipalLookupService extends UserPrincipalLookupService {
       NativeGroupPrincipal(gid)(Some(group))
     }
 
-  private[attribute] def getGroupName(gid: stat.gid_t): Option[String] = Zone {
+  private[attribute] def getGroupName(gid: stat.gid_t): String = Zone {
     implicit z =>
       val buf = alloc[grp.group]
 
@@ -56,15 +46,15 @@ object NativeUserPrincipalLookupService extends UserPrincipalLookupService {
       val err = grp.getgrgid(gid, buf)
 
       if (err == 0) {
-        Some(fromCString(buf._1))
+        fromCString(buf._1)
       } else if (errno.errno == 0) {
-        None
+        gid.toString
       } else {
         throw UnixException("getgrgid", errno.errno)
       }
   }
 
-  private[attribute] def getUsername(uid: stat.uid_t): Option[String] = Zone {
+  private[attribute] def getUsername(uid: stat.uid_t): String = Zone {
     implicit z =>
       val buf = alloc[pwd.passwd]
 
@@ -72,9 +62,9 @@ object NativeUserPrincipalLookupService extends UserPrincipalLookupService {
       val err = pwd.getpwuid(uid, buf)
 
       if (err == 0) {
-        Some(fromCString(buf._1))
+        fromCString(buf._1)
       } else if (errno.errno == 0) {
-        None
+        uid.toString
       } else {
         throw UnixException("getpwuid", errno.errno)
       }
