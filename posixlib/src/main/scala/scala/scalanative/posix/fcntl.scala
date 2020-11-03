@@ -13,6 +13,9 @@ object fcntl {
 
   def fcntl(fd: CInt, cmd: CInt, flags: CInt): CInt = extern
 
+  @name("scalanative_at_fdcwd")
+  def AT_FDCWD: CInt = extern
+
   @name("scalanative_f_dupfd")
   def F_DUPFD: CInt = extern
 
