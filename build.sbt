@@ -109,10 +109,10 @@ lazy val publishSnapshot =
 // name: sbt-scala-native, license: BSD-like, version control: git@github.com:scala-native/scala-native.git
 // to be available without a resolver
 // follow: https://www.scala-sbt.org/1.x/docs/Bintray-For-Plugins.html#Linking+your+package+to+the+sbt+organization
-lazy val bintrayPublishSettings: Seq[Setting[_]] = Seq(
-  bintrayRepository := "sbt-plugins",
-  bintrayOrganization := Some("scala-native")
-) ++ publishSettings
+///lazy val bintrayPublishSettings: Seq[Setting[_]] = Seq(
+//  bintrayRepository := "sbt-plugins",
+//  bintrayOrganization := Some("scala-native")
+//) ++ publishSettings
 
 lazy val mavenPublishSettings: Seq[Setting[_]] = Seq(
   publishMavenStyle := true,
@@ -293,7 +293,7 @@ lazy val nscplugin =
 
 lazy val sbtPluginSettings: Seq[Setting[_]] =
   toolSettings ++
-    bintrayPublishSettings ++
+    //bintrayPublishSettings ++
     Seq(
       scriptedLaunchOpts := {
         scriptedLaunchOpts.value ++
