@@ -1,2 +1,2 @@
 ThisBuild / githubOwner := "avdv"
-ThisBuild / githubRepository := "sbt-packages"
+ThisBuild / githubRepository := "scala-native"
