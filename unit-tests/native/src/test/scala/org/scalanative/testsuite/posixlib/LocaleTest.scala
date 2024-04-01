@@ -21,12 +21,6 @@ object LocaleTest {
 
   @BeforeClass
   def beforeClass(): Unit = {
-    assumeTrue(
-      "locale.scala is not implemented on Windows",
-      !LinktimeInfo.isWindows
-    )
-
-    if (!LinktimeInfo.isWindows) {
       val entryLocale = setlocale(LC_ALL, null)
       assertNotNull(
         "setlocale() could not determine locale at start of test.",
@@ -48,12 +42,10 @@ object LocaleTest {
 
       if (currentLocale == null)
         savedLocale = None // Oops, no change! Nothing to restore.
-    }
   }
 
   @AfterClass
   def afterClass(): Unit = {
-    if (!LinktimeInfo.isWindows) {
       savedLocale.map { sl =>
         errno = 0
         // restore Locale as recorded on entry
@@ -64,7 +56,6 @@ object LocaleTest {
         if (restoredLocale == null)
           fail("setlocale() was unable to restore the locale.")
       }
-    }
   }
 }
 
@@ -85,7 +76,7 @@ class LocaleTest {
     // OpenBSD support of locale quite incomplete, it never changes
     // LC_NUMERIC and LC_MONETARY that means that it always returns
     // the smae value with C locale.
-    if (!LinktimeInfo.isWindows && !LinktimeInfo.isOpenBSD) {
+    if (!LinktimeInfo.isOpenBSD) {
       val currentLconv = localeconv() // documented as always succeeds.
 
       assertEquals(

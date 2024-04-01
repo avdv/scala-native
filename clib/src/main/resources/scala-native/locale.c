@@ -1,7 +1,4 @@
 #if defined(SCALANATIVE_COMPILE_ALWAYS) || defined(__SCALANATIVE_C_LOCALE)
-#ifdef _WIN32
-// No Windows support
-#else
 #if !(defined __STDC_VERSION__) || (__STDC_VERSION__ < 201112L)
 #ifndef SCALANATIVE_SUPPRESS_STRUCT_CHECK_WARNING
 #warning "Size and order of C structures are not checked when -std < c11."
@@ -49,6 +46,10 @@ struct scalanative_lconv {
     char n_sep_by_space;
     char p_sign_posn;
     char n_sign_posn;
+#ifndef _WIN32
+    // not supported on Windows
+    // see https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/localeconv?view=msvc-170
+
     char int_p_cs_precedes;
     char int_p_sep_by_space; // Linux, overlays macOS int_n_cs_precedes
 
@@ -56,6 +57,7 @@ struct scalanative_lconv {
     char int_n_sep_by_space;
     char int_p_sign_posn;
     char int_n_sign_posn;
+#endif
 };
 
 _Static_assert(sizeof(struct scalanative_lconv) <= sizeof(struct lconv),
@@ -133,6 +135,7 @@ _Static_assert(offsetof(struct scalanative_lconv, n_sign_posn) ==
                    offsetof(struct lconv, n_sign_posn),
                "Unexpected offset: scalanative_lconv.n_sign_posn");
 
+#ifndef _WIN32
 _Static_assert(offsetof(struct scalanative_lconv, int_p_cs_precedes) ==
                    offsetof(struct lconv, int_p_cs_precedes),
                "Unexpected offset: scalanative_lconv.int_p_cs_precedes");
@@ -166,6 +169,7 @@ _Static_assert(offsetof(struct scalanative_lconv, int_p_sign_posn) ==
 _Static_assert(offsetof(struct scalanative_lconv, int_n_sign_posn) ==
                    offsetof(struct lconv, int_n_sign_posn),
                "Unexpected offset: scalanative_lconv.int_n_sign_posn");
+#endif // ! _WIN32
 
 // Symbolic constants
 
@@ -182,5 +186,4 @@ int scalanative_lc_numeric() { return LC_NUMERIC; }
 int scalanative_lc_time() { return LC_TIME; }
 
 #endif // POSIX
-#endif // ! _WIN32
 #endif
