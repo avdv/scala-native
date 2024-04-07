@@ -115,6 +115,6 @@ runs:
       shell: pwsh
       run: clang --version
 
-    # - name: Install libs
-    #   shell: pwsh
-    #   run: vcpkg install bdwgc zlib --triplet=x64-windows-static
+    - name: Install libs
+      shell: pwsh
+      run: vcpkg install bdwgc zlib --triplet=x64-windows-static
