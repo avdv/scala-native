@@ -76,11 +76,11 @@ runs:
             Write-Host "Attempting to install LLVM (try $($retryCount + 1 - $global:retryAttempt) of $($retryCount + 1))..."
             #choco install llvm --version=${{ inputs.llvm-version }} --allow-downgrade --force
             if (${{ inputs.llvm-version }} -eq 16.0.6) {
-              $url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20230614/llvm-mingw-20230614-ucrt-x86_64.zip"
-              $prefix = "llvm-mingw-20230614-ucrt-x86_64"
+              $url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20230614/llvm-mingw-20230614-msvcrt-x86_64.zip"
+              $prefix = "llvm-mingw-20230614-msvcrt-x86_64"
             } elseif (${{ inputs.llvm-version }} -eq 17.0.6) { # 
-              $url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20231128/llvm-mingw-20231128-ucrt-x86_64.zip"
-              $prefix = "llvm-mingw-20231128-ucrt-x86_64"
+              $url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20231128/llvm-mingw-20231128-msvcrt-x86_64.zip"
+              $prefix = "llvm-mingw-20231128-msvcrt-x86_64"
             } else {
               Throw "llvm version ${{ inputs.llvm-version }} not supported"
             }
