@@ -74,7 +74,19 @@ runs:
 
         function InstallLLVM {
             Write-Host "Attempting to install LLVM (try $($retryCount + 1 - $global:retryAttempt) of $($retryCount + 1))..."
-            choco install llvm --version=${{ inputs.llvm-version }} --allow-downgrade --force
+            #choco install llvm --version=${{ inputs.llvm-version }} --allow-downgrade --force
+            if (${{ inputs.llvm-version }} -eq 16) {
+              $url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20230614/llvm-mingw-20230614-ucrt-x86_64.zip"
+              $prefix = "llvm-mingw-20230614-ucrt-x86_64"
+            elseif (${{ inputs.llvm-version }} -eq 17) {
+              $url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20231128/llvm-mingw-20231128-ucrt-x86_64.zip"
+              $prefix = "llvm-mingw-20231128-ucrt-x86_64"
+            } else {
+              Throw "llvm version ${{ inputs.llvm-version }} not supported"
+            }
+            Invoke-WebRequest $url -OutFile llvm.zip
+            Expand-Archive llvm.zip -DestinationPath C:\llvm
+            echo "c:\llvm\$prefix\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         }
 
         # Attempt to install LLVM with retries
@@ -95,14 +107,14 @@ runs:
             }
         }
 
-    - name: Add LLVM on Path
-      shell: pwsh
-      run: echo "${env:ProgramFiles}\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    # - name: Add LLVM on Path
+    #   shell: pwsh
+    #   run: echo "${env:ProgramFiles}\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Assert clang installed and on path
       shell: pwsh
       run: clang --version
 
-    - name: Install libs
-      shell: pwsh
-      run: vcpkg install bdwgc zlib --triplet=x64-windows-static
+    # - name: Install libs
+    #   shell: pwsh
+    #   run: vcpkg install bdwgc zlib --triplet=x64-windows-static
