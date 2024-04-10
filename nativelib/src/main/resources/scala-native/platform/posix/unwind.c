@@ -1,6 +1,6 @@
 // Unwind implementation used only on Posix compliant systems
 #if defined(__unix__) || defined(__unix) || defined(unix) ||                   \
-    (defined(__APPLE__) && defined(__MACH__)) || defined(__MINGW32__)
+    (defined(__APPLE__) && defined(__MACH__))
 #include "../unwind.h"
 #include "libunwind/libunwind.h"
 
