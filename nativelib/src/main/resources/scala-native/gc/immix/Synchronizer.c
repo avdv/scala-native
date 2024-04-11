@@ -49,6 +49,9 @@ static void Synchronizer_WaitForResumption(MutatorThread *selfThread);
 void **scalanative_GC_yieldpoint_trap;
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 static LONG WINAPI SafepointTrapHandler(EXCEPTION_POINTERS *ex) {
     if (ex->ExceptionRecord->ExceptionFlags == 0) {
         switch (ex->ExceptionRecord->ExceptionCode) {
