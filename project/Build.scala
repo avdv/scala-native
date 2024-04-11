@@ -590,6 +590,7 @@ object Build {
       javaVersionSharedTestSources,
       nativeConfig ~= { c =>
         c.withLinkStubs(true)
+          .withLinkingOptions(c.linkingOptions ++ List("-gcodeview", "-Wl,--pdb="))
           .withEmbedResources(true)
           // Tests using threads are ignored in runtime, skip checks and allow to link
           .withCheckFeatures(false)
