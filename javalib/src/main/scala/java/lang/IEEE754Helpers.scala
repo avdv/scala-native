@@ -3,6 +3,7 @@ package java.lang
 import scalanative.unsafe._
 import scalanative.unsigned._
 import scalanative.libc.errno._
+import scalanative.libc.stdio.puts
 
 private[java] object IEEE754Helpers {
   // Java parseDouble() and parseFloat() allow characters at and after
@@ -65,12 +66,12 @@ private[java] object IEEE754Helpers {
 
     val nChars = s.length
     if (nChars == 0)
-      throw new NumberFormatException(exceptionMsg(s))
+      throw new NumberFormatException("nchars == 0 " + exceptionMsg(s))
 
     val cStr: CString = stackalloc[scala.Byte](nChars + 1)
 
     if (_numericCharSeqToCString(s, nChars, cStr) == false) {
-      throw new NumberFormatException(exceptionMsg(s))
+      throw new NumberFormatException("cannot convert to cstring " + exceptionMsg(s))
     }
 
     val end = stackalloc[CString]() // Address one past last parsed cStr byte.
@@ -86,10 +87,11 @@ private[java] object IEEE754Helpers {
         // or +/- infinity for values too +/- large for an IEEE754.
         // Slick C lib design!
       } else {
-        throw new NumberFormatException(exceptionMsg(s))
+        throw new NumberFormatException(s"parse ($errno) " + exceptionMsg(s))
       }
     } else if (!end == cStr) { // No leading digit found: only "D" not "0D"
-      throw new NumberFormatException(exceptionMsg(s))
+      puts(cStr);
+      throw new NumberFormatException(s"*end == cStr ($res) " + exceptionMsg(s))
     } else {
       // Beware: cStr may have interior NUL/null bytes. Better to
       //         consider it a counted byte array rather than a proper
@@ -109,7 +111,7 @@ private[java] object IEEE754Helpers {
         while (idx < bytesLen) { // Check for garbage in the unparsed remnant.
           val b = cStr(idx.toUSize)
           if ((b < 0) || b > 0x20) {
-            throw new NumberFormatException(exceptionMsg(s))
+            throw new NumberFormatException("garbage in unparsed remnant " + exceptionMsg(s))
           }
           idx += 1
         }
